@@ -6,10 +6,12 @@ Created on Sat Sep 28 01:20:57 2019
 """
 
 # Load necessary modules
-import sys
+
 import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import findiff
 
 
 #********************************************************************
@@ -162,14 +164,41 @@ fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
 
 #  generate the Hmatrix ------------------------------
 
-H=numpy.zeros((nelements, nelements)), dtype=float)
+# coefficients for the derivatives
+coefs_d1 = findiff.coefficients(deriv=1, acc=4)
+for i in range(5):
+    print(i,"\t",coefs_d1['center']['coefficients'][i],"\t",coefs_d1['forward']['coefficients'][i])
+
+print("\n \n")
+
+coefs_d2 = findiff.coefficients(deriv=2, acc=4)
+for i in range(5):
+    print(i,"\t",coefs_d2['center']['coefficients'][i],"\t",coefs_d2['forward']['coefficients'][i])
+
+
+# check the coefs with the Igor implementation
+    
+
+
+
+
+H=np.zeros((nelements, nelements), dtype=float)
 
 for i in range(nelements):
-	print i 
+	H[i,i]=5
+
+
 
 #-------------------------------------------------------------------
-plt.figure(0)
-ax0 = plt.axes()
-plt.title('Potential', fontsize=20)
-plt.plot( rwave, fp ,'r-',  label='unexposed  pixel')
+#plt.figure(0)
+#ax0 = plt.axes()
+#plt.title('Potential', fontsize=20)
+#plt.plot( rwave, fp ,'r-',  label='potential')
 #plt.plot( index,  unexposed_pixel2, 'g-',  label='unexposed  pixel')
+
+
+
+#fig, ax = plt.subplots()
+# Bilinear interpolation - this will look blurry
+#ax1.imshow(H, cmap=cm.RdYlGn )
+#plt.show()
