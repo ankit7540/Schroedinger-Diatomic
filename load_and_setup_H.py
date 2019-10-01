@@ -114,6 +114,7 @@ step  =  0.005
 start  = distance[0]
 end = distance[-1]
 rwave=np.arange(start,end,step)
+nelements=len(rwave)
 #-------------------------------------------------------------------
 print(start,end)
 
@@ -140,7 +141,7 @@ cs = CubicSpline(distance_c3,  correction3,bc_type=((1,derv[0]),(1,derv[1])))
 radc_interp = cs(rwave)
 
 
-# Generate  the final potential
+# Generate  the final potential ---------------------------------
 
 #  Generate final potential based on the  unit
 if  (unit_potential ==  "cm-1"):
@@ -159,10 +160,12 @@ if  (unit_c3 ==  "cm-1"):
 
 fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
 
-#  generate the Hmatrix
+#  generate the Hmatrix ------------------------------
 
+H=numpy.zeros((nelements, nelements)), dtype=float)
 
-
+for i in range(nelements):
+	print i 
 
 #-------------------------------------------------------------------
 plt.figure(0)
