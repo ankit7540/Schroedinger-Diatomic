@@ -65,11 +65,27 @@ def fd_ends(x, y):
 #************************************************************************
 # Define the factorial function
 def factorial(n):
-    if n == 0:
+    A=np.zeros((5,5))
+    C=np.zeros(5)
+    C[n]=1
+
+    for(i=0 ; i<5 ; i=i+1)
+    	A[][i]=i
+    		for (j=0 ; j<5 ; j=j+1)
+    			A[j][i]=(i^j) ;
+    			A[j][i] = A[j][i] / factorial (j)
+    		endfor
+    endfor
         return 1
     else:
         return n * factorial(n-1)
 #************************************************************************
+# Coefs for finite difference derivatives
+def coef_r1(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
 #-------------------------------------------------------------------
 # Define required functions
@@ -177,7 +193,7 @@ for i in range(5):
 
 
 # check the coefs with the Igor implementation
-    
+
 
 
 
