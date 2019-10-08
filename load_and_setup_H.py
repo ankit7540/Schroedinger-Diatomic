@@ -6,11 +6,13 @@ Created on Sat Sep 28 01:20:57 2019
 """
 
 # Load necessary modules
+
 #import sys
 import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
 from elements import ELEMENTS
+
 
 
 #print  (str(ELEMENTS[8])  )
@@ -77,11 +79,27 @@ def fd_ends(x, y):
 #************************************************************************
 # Define the factorial function
 def factorial(n):
-    if n == 0:
+    A=np.zeros((5,5))
+    C=np.zeros(5)
+    C[n]=1
+
+    for(i=0 ; i<5 ; i=i+1)
+    	A[][i]=i
+    		for (j=0 ; j<5 ; j=j+1)
+    			A[j][i]=(i^j) ;
+    			A[j][i] = A[j][i] / factorial (j)
+    		endfor
+    endfor
         return 1
     else:
         return n * factorial(n-1)
 #************************************************************************
+# Coefs for finite difference derivatives
+def coef_r1(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
 #-------------------------------------------------------------------
 # Define required functions
@@ -179,14 +197,48 @@ fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
 
 #  generate the Hmatrix ------------------------------
 
+
 H=np.zeros((nelements, nelements), dtype='float')
 
 #for i in range(nelements):
 	#print (i )
+=======
+# coefficients for the derivatives
+coefs_d1 = findiff.coefficients(deriv=1, acc=4)
+for i in range(5):
+    print(i,"\t",coefs_d1['center']['coefficients'][i],"\t",coefs_d1['forward']['coefficients'][i])
+
+print("\n \n")
+
+coefs_d2 = findiff.coefficients(deriv=2, acc=4)
+for i in range(5):
+    print(i,"\t",coefs_d2['center']['coefficients'][i],"\t",coefs_d2['forward']['coefficients'][i])
+
+
+# check the coefs with the Igor implementation
+
+
+
+
+
+H=np.zeros((nelements, nelements), dtype=float)
+
+for i in range(nelements):
+	H[i,i]=5
+
+
+
 
 #-------------------------------------------------------------------
-plt.figure(0)
-ax0 = plt.axes()
-plt.title('Potential', fontsize=20)
-plt.plot( rwave, fp ,'r-',  label='unexposed  pixel')
+#plt.figure(0)
+#ax0 = plt.axes()
+#plt.title('Potential', fontsize=20)
+#plt.plot( rwave, fp ,'r-',  label='potential')
 #plt.plot( index,  unexposed_pixel2, 'g-',  label='unexposed  pixel')
+
+
+
+#fig, ax = plt.subplots()
+# Bilinear interpolation - this will look blurry
+#ax1.imshow(H, cmap=cm.RdYlGn )
+#plt.show()
