@@ -12,7 +12,7 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
 from elements import ELEMENTS
-
+import findiff
 
 
 #print  (str(ELEMENTS[8])  )
@@ -77,25 +77,13 @@ def fd_ends(x, y):
     return(fd1, fdn)
 
 #************************************************************************
+
+
+#************************************************************************
+
+
 # Define the factorial function
 def factorial(n):
-    A=np.zeros((5,5))
-    C=np.zeros(5)
-    C[n]=1
-
-    for(i=0 ; i<5 ; i=i+1)
-    	A[][i]=i
-    		for (j=0 ; j<5 ; j=j+1)
-    			A[j][i]=(i^j) ;
-    			A[j][i] = A[j][i] / factorial (j)
-    		endfor
-    endfor
-        return 1
-    else:
-        return n * factorial(n-1)
-#************************************************************************
-# Coefs for finite difference derivatives
-def coef_r1(n):
     if n == 0:
         return 1
     else:
@@ -202,7 +190,7 @@ H=np.zeros((nelements, nelements), dtype='float')
 
 #for i in range(nelements):
 	#print (i )
-=======
+
 # coefficients for the derivatives
 coefs_d1 = findiff.coefficients(deriv=1, acc=4)
 for i in range(5):
