@@ -7,12 +7,26 @@ Created on Sat Sep 28 01:20:57 2019
 
 # Load necessary modules
 
+#import sys
 import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import findiff
+from elements import ELEMENTS
 
+
+
+#print  (str(ELEMENTS[8])  )
+
+selection=ELEMENTS[2]
+print(selection.number, selection.mass)
+
+m1=selection.isotopes[3]
+print(m1)
+
+print( selection.isotopes[4])
+print( ELEMENTS[7].isotopes[15])
+print( ELEMENTS[8].mass)
+print( selection.isotopes[4])
 
 #********************************************************************
 # python function to compute the first derivative at the first point
@@ -176,10 +190,19 @@ if  (unit_c3 ==  "cm-1"):
 
 
 
+
+
+# final potential
 fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
 
 #  generate the Hmatrix ------------------------------
 
+
+H=np.zeros((nelements, nelements), dtype='float')
+
+#for i in range(nelements):
+	#print (i )
+=======
 # coefficients for the derivatives
 coefs_d1 = findiff.coefficients(deriv=1, acc=4)
 for i in range(5):
@@ -202,6 +225,7 @@ H=np.zeros((nelements, nelements), dtype=float)
 
 for i in range(nelements):
 	H[i,i]=5
+
 
 
 
