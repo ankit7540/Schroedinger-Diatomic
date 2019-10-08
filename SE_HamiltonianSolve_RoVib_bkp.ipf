@@ -353,7 +353,7 @@ variable n;
 make /O /D /n=(5,5) A=0
 make  /O /D /n=5 C=0
 C[n]=1 
-make /O /D /n=5 D_coef
+//make /O /D /n=5 D_coef
 variable i,j
 
 for(i=0 ; i<5 ; i=i+1)
@@ -364,13 +364,13 @@ for(i=0 ; i<5 ; i=i+1)
 		endfor
 endfor 
 
-// print A
+ print A
 
 string cmd; sprintf cmd,"matrixop /O D_coefR1= inv(A) x C "
 //print cmd
 execute cmd
 wave D_coefR1 = D_coefR1
-// print D_coefR1
+print D_coefR1
 end
 //=======================================
 //ROW-2
