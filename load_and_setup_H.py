@@ -192,15 +192,16 @@ H=np.zeros((nelements, nelements), dtype='float')
 	#print (i )
 
 # coefficients for the derivatives
-coefs_d1 = findiff.coefficients(deriv=1, acc=4)
-for i in range(5):
+accuracy_order=10    
+coefs_d1 = findiff.coefficients(deriv=2, acc=accuracy_order)
+for i in range(accuracy_order+1):
     print(i,"\t",coefs_d1['center']['coefficients'][i],"\t",coefs_d1['forward']['coefficients'][i])
 
 print("\n \n")
 
-coefs_d2 = findiff.coefficients(deriv=2, acc=4)
-for i in range(5):
-    print(i,"\t",coefs_d2['center']['coefficients'][i],"\t",coefs_d2['forward']['coefficients'][i])
+#coefs_d2 = findiff.coefficients(deriv=2, acc=4)
+#for i in range(5):
+#    print(i,"\t",coefs_d2['center']['coefficients'][i],"\t",coefs_d2['forward']['coefficients'][i])
 
 
 # check the coefs with the Igor implementation
