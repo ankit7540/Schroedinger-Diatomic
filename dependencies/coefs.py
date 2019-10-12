@@ -57,7 +57,8 @@ def coef_asymmetric_forward (n, nd, m):
                 A[j,i]=(i-(math.floor(nd/2)))**j
             else:
                  A[j,i]=i**j    
-            A[j,i]=A[j,i]/math.factorial(j)                 
+            A[j,i]=A[j,i]/math.factorial(j)
+    print(A)        
             
     return np.linalg.solve(A, C)
 #-------------------------------------------------------------
@@ -88,9 +89,8 @@ print (t.timeit(10))
 #----------------------------------
 
 
-print(coef_symmetric_center( A, B) )
-
-print(coef_asymmetric_forward( A, B, M) )
+#print(coef_symmetric_center( A, B) )
+coef_asymmetric_forward( A, 5, M) 
 
     
 
