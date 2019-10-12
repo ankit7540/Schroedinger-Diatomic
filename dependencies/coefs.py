@@ -34,9 +34,9 @@ def coef_symmetric_center (n, nd):
     return np.linalg.solve(A, C)
 #-------------------------------------------------------------
 
-def coef_asymmetric_forward (n, nd, m):
+def coef_forward (n, nd ):
     '''
-    finite difference coef for asymmetric (forward) derivative
+    finite difference coef for forward derivative
     Params:
         n   = nth order derivative, non-negative integer
         nd  = nd point stencil, non-negative integer
@@ -52,47 +52,61 @@ def coef_asymmetric_forward (n, nd, m):
 
     for i in range(nd):
         A[:,i]=i
-        for j in range(nd):
-            if (j>0):
-                A[j,i]=(i-(math.floor(nd/2)))**j
-            else:
-                 A[j,i]=i**j    
-            A[j,i]=A[j,i]/math.factorial(j)
-    print(A)        
+        for j in range(nd):  
+            A[j,i]=(i**j)/math.factorial(j)
+    #print(A)        
             
     return np.linalg.solve(A, C)
+    
 #-------------------------------------------------------------
 
-def coef_r1_npoint (n, nd):
+def coef_backward (n, nd ):
+    '''
+    finite difference coef for backward derivative
+    Params:
+        n   = nth order derivative, non-negative integer
+        nd  = nd point stencil, non-negative integer
+        condition : n < nd 
+    
+    Returns:
+        array[float64] of length =nd
+    '''
+
     A=np.zeros((nd,nd),dtype='float')
     C=np.zeros(nd, dtype='float')
     C[n]=1
 
     for i in range(nd):
         A[:,i]=i
-        for j in range(nd):
+        for j in range(nd):  
             A[j,i]=(i**j)/math.factorial(j)
-    
+        
+            if j % 2 != 0:
+                A[j,i]=-1*A[j,i] 
+        
+    #print(A)            
     return np.linalg.solve(A, C)
-
+    
+#-------------------------------------------------------------
 #-------------------------------------------------------------
 
 
 #----------------------------------
 # timing the functions 
-A=1
-B=13
-M=1
-t = timeit.Timer(functools.partial(coef_asymmetric_forward, A, B, M)) 
-print (t.timeit(10))
+#A=1
+#B=13
+#M=1
+#t = timeit.Timer(functools.partial(coef_asymmetric_forward, A, B, M)) 
+#print (t.timeit(10))
 
 #----------------------------------
 
 
 #print(coef_symmetric_center( A, B) )
-coef_asymmetric_forward( A, 5, M) 
+S1=coef_backward( 1, 5 ) 
 
     
 
 #X=( coef_symmetric_center (1,11)  )    
 #print(X)
+S2=coef_forward( 1, 5 ) 
