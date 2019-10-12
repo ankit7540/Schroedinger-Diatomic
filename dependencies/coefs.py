@@ -34,7 +34,7 @@ def coef_symmetric_center (n, nd):
     return np.linalg.solve(A, C)
 #-------------------------------------------------------------
 
-def coef_asymmetric_forward (n, nd):
+def coef_asymmetric_forward (n, nd, m):
     '''
     finite difference coef for asymmetric (forward) derivative
     Params:
@@ -46,17 +46,20 @@ def coef_asymmetric_forward (n, nd):
         array[float64] of length =nd
     '''
 
-    A=np.zeros((5,5),dtype='float')
-    C=np.zeros(5, dtype='float')
+    A=np.zeros((nd,nd),dtype='float')
+    C=np.zeros(nd, dtype='float')
     C[n]=1
 
-    for i in range(5):
+    for i in range(nd):
         A[:,i]=i
-        for j in range(5):
-            A[j,i]=(i**j)/math.factorial(j)
-    
-    return np.matmul( np.linalg.inv(A) ,C)
-
+        for j in range(nd):
+            if (j>0):
+                A[j,i]=(i-(math.floor(nd/2)))**j
+            else:
+                 A[j,i]=i**j    
+            A[j,i]=A[j,i]/math.factorial(j)                 
+            
+    return np.linalg.solve(A, C)
 #-------------------------------------------------------------
 
 def coef_r1_npoint (n, nd):
@@ -78,11 +81,16 @@ def coef_r1_npoint (n, nd):
 # timing the functions 
 A=1
 B=13
-t = timeit.Timer(functools.partial(coef_symmetric_center, A, B)) 
+M=1
+t = timeit.Timer(functools.partial(coef_asymmetric_forward, A, B, M)) 
 print (t.timeit(10))
 
 #----------------------------------
 
+
+print(coef_symmetric_center( A, B) )
+
+print(coef_asymmetric_forward( A, B, M) )
 
     
 
