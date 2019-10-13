@@ -136,7 +136,7 @@ end = distance[-1]
 rwave=np.arange(start,end,step)
 nelements=len(rwave)
 #-------------------------------------------------------------------
-print(start,end)
+#print(start,end)
 
 # Steps
 
@@ -192,7 +192,7 @@ H=np.zeros((nelements, nelements), dtype='float')
 	#print (i )
 
 # coefficients for the derivatives
-accuracy_order=10    
+accuracy_order=4  
 coefs_d1 = findiff.coefficients(deriv=2, acc=accuracy_order)
 for i in range(accuracy_order+1):
     print(i,"\t",coefs_d1['center']['coefficients'][i],"\t",coefs_d1['forward']['coefficients'][i])

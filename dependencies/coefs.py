@@ -88,6 +88,75 @@ def coef_backward (n, nd ):
     return np.linalg.solve(A, C)
     
 #-------------------------------------------------------------
+    
+
+def coef_forward_asymmetric (n, nd, m ):
+    '''
+    finite difference coef for symmetric (center) derivative
+    Params:
+        n   = nth order derivative, non-negative integer
+        nd  = nd point stencil, non-negative integer
+        condition : n < nd 
+        m   = 1 : 1 point backward, other forward
+              2 : 2 point backward, other forward
+              .
+              M : M point backward, other forward
+    
+    Returns:
+        array[float64] of length =nd
+    '''
+
+    A=np.zeros((nd,nd))
+    C=np.zeros(nd)
+    C[n]=1
+
+    for i in range(nd):
+        A[:,i]=i
+        for j in range(nd):
+            if (j>0):
+                A[j,i]=(i-m)**j
+            else:
+                A[j,i]=i**j    
+            A[j,i]=A[j,i]/math.factorial(j)
+
+    return np.linalg.solve(A, C)
+    
+#-------------------------------------------------------------
+
+def coef_backward_asymmetric (n, nd, m ):
+    '''
+    finite difference coef for symmetric (center) derivative
+    Params:
+        n   = nth order derivative, non-negative integer
+        nd  = nd point stencil, non-negative integer
+        condition : n < nd
+        m   = 1 : 1 point backward, other forward
+              2 : 2 point backward, other forward
+              .
+              M : M point backward, other forward        
+    
+    Returns:
+        array[float64] of length =nd
+    '''
+
+    A=np.zeros((nd,nd))
+    C=np.zeros(nd)
+    C[n]=1
+
+    for i in range(nd):
+        A[:,i]=i
+        for j in range(nd):
+            if (j>0):
+                A[j,i]=(i-m)**j
+            else:
+                A[j,i]=i**j    
+            A[j,i]=A[j,i]/math.factorial(j)
+            
+            if j % 2 != 0:
+                A[j,i]=-1*A[j,i] 
+
+    return np.linalg.solve(A, C)    
+
 #-------------------------------------------------------------
 
 
@@ -109,4 +178,7 @@ S1=coef_backward( 1, 5 )
 
 #X=( coef_symmetric_center (1,11)  )    
 #print(X)
-S2=coef_forward( 1, 5 ) 
+S2=coef_symmetric_center (3, 5 ) 
+S3=coef_forward (3, 5 ) 
+for i in range(np.shape(S2)[0]):
+    print(S2[i],"\t",S3[i])
