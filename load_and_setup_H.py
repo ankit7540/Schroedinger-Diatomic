@@ -17,16 +17,7 @@ import findiff
 
 #print  (str(ELEMENTS[8])  )
 
-selection=ELEMENTS[2]
-print(selection.number, selection.mass)
 
-m1=selection.isotopes[3]
-print(m1)
-
-print( selection.isotopes[4])
-print( ELEMENTS[7].isotopes[15])
-print( ELEMENTS[8].mass)
-print( selection.isotopes[4])
 
 #********************************************************************
 # python function to compute the first derivative at the first point
@@ -185,9 +176,6 @@ fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
 
 #  generate the Hmatrix ------------------------------
 
-
-H=np.zeros((nelements, nelements), dtype='float')
-
 #for i in range(nelements):
 	#print (i )
 
@@ -206,17 +194,48 @@ print("\n \n")
 
 # check the coefs with the Igor implementation
 
+selection=ELEMENTS[1]
+print(selection.number, selection.mass)
+
+m1=selection.isotopes[1]
+m2=selection.isotopes[2]
+#m3=selection.isotopes[3]
+print(m1, m2 )
+
+print( selection.isotopes[4])
+print( ELEMENTS[7].isotopes[15])
+print( ELEMENTS[8].mass)
+print( selection.isotopes[4])
+
+print("\n")
 
 
+def reduced_mass(eA, eB):
+    '''
+    eA = atomic number for atom A
+    eB = atomic number for atom B
+    '''
+    mass = 1 
+    mA=eA*mass+eA
+    mB=eB*mass+eB
+    return 1/(1/mA + 1/mB)
+    
+    
 
+def gen_H_matrix(qA,qB,J,rwave,potential):
+    '''
+    Generate the Hamiltonian matrix for the radial 
+    nuclear equation for diatomic molecule
+    '''
+    
+    H=np.zeros((nelements, nelements), dtype=float)
+    nu=reduced_mass(qA, qB)
+    for i in range(nelements):
+        
 
-H=np.zeros((nelements, nelements), dtype=float)
-
-for i in range(nelements):
-	H[i,i]=5
-
-
-
+        
+        J_term = (J*(J+1)) / (2*nu*(rwave[i])**2 )
+        H[i,i]=J_term
 
 #-------------------------------------------------------------------
 #plt.figure(0)
