@@ -200,26 +200,30 @@ print(selection.number, selection.mass)
 m1=selection.isotopes[1]
 m2=selection.isotopes[2]
 #m3=selection.isotopes[3]
-print(m1, m2 )
+print(m1, m2, "\n" )
 
-print( selection.isotopes[4])
-print( ELEMENTS[7].isotopes[15])
-print( ELEMENTS[8].mass)
-print( selection.isotopes[4])
-
+#print( selection.isotopes[4])
+#print( ELEMENTS[7].isotopes[15])
+#print( ELEMENTS[8].mass)
+print( selection.isotopes[1])
+print( selection.isotopes[2])
 print("\n")
 
+
+`
 
 def reduced_mass(eA, eB):
     '''
     eA = atomic number for atom A
     eB = atomic number for atom B
     '''
-    mass = 1 
+    mass = 1822.888486209
     mA=eA*mass+eA
     mB=eB*mass+eB
     return 1/(1/mA + 1/mB)
     
+
+
     
 
 def gen_H_matrix(qA,qB,J,rwave,potential):
@@ -238,6 +242,9 @@ def gen_H_matrix(qA,qB,J,rwave,potential):
         H[i,i]=J_term
 
 #-------------------------------------------------------------------
+
+print(reduced_mass(1,1))        
+        
 #plt.figure(0)
 #ax0 = plt.axes()
 #plt.title('Potential', fontsize=20)
