@@ -11,7 +11,7 @@ Created on Sat Sep 28 01:20:57 2019
 import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
-from elements import ELEMENTS
+import periodictable as pt
 import findiff
 
 
@@ -194,56 +194,55 @@ print("\n \n")
 
 # check the coefs with the Igor implementation
 
-selection=ELEMENTS[1]
-print(selection.number, selection.mass)
-
-m1=selection.isotopes[1]
-m2=selection.isotopes[2]
-#m3=selection.isotopes[3]
-print(m1, m2, "\n" )
-
-#print( selection.isotopes[4])
-#print( ELEMENTS[7].isotopes[15])
-#print( ELEMENTS[8].mass)
-print( selection.isotopes[1])
-print( selection.isotopes[2])
-print("\n")
 
 
-`
-
-def reduced_mass(eA, eB):
+def reduced_mass(zA, iMassA,eA, zB, iMassB, eB):
     '''
-    eA = atomic number for atom A
-    eB = atomic number for atom B
+    zA = atomic number for atom A
+    iMassA = atomic mass of specific isotope
+    zB = atomic number for atom B
+    iMassB = atomic mass of specific isotope
     '''
     mass = 1822.888486209
-    mA=eA*mass+eA
-    mB=eB*mass+eB
-    return 1/(1/mA + 1/mB)
+    
+    sA=pt.elements[zA][iMassA]
+    sB=pt.elements[zB][iMassB]
+    
+    mA=float(sA.mass)
+    mB=float(sB.mass)
+    
+    A=mA*mass+eA
+    B=mB*mass+eB
+    print (A, B)
+    #return reduced mass
+    return 1/(1/A + 1/B)
     
 
-
-    
-
-def gen_H_matrix(qA,qB,J,rwave,potential):
+def gen_H_matrix(mass,J,rwave,potential):
     '''
     Generate the Hamiltonian matrix for the radial 
     nuclear equation for diatomic molecule
     '''
     
     H=np.zeros((nelements, nelements), dtype=float)
-    nu=reduced_mass(qA, qB)
+    
     for i in range(nelements):
         
 
         
-        J_term = (J*(J+1)) / (2*nu*(rwave[i])**2 )
+        J_term = (J*(J+1)) / (2*mass*(rwave[i])**2 )
         H[i,i]=J_term
+    
+    return H    
 
 #-------------------------------------------------------------------
+print(reduced_mass(1,1,1,1,1,1))        
 
-print(reduced_mass(1,1))        
+print(reduced_mass(1,1,1,1,2,1))        
+print(reduced_mass(1,2,1,1,2,1))        
+nu = reduced_mass(1,2,1,1,2,1)
+
+H1=gen_H_matrix(nu ,2,rwave,fp)
         
 #plt.figure(0)
 #ax0 = plt.axes()
