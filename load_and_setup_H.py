@@ -12,8 +12,8 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
 import periodictable as pt
-import findiff
-import os
+#import findiff
+#import os
 #import dependencies as dep
 from dependencies import coefs
 
@@ -198,7 +198,7 @@ def reduced_mass(zA, iMassA,eA, zB, iMassB, eB):
     
     A=mA*mass
     B=mB*mass
-    print (A, B)
+    print ("\nA = ",A,"B = ", B)
     
     #return reduced mass
     return 1/(1/A + 1/B)
@@ -271,7 +271,7 @@ def gen_H_matrix(mass,J,rwave,potential, accuracy, step):
     print (nelements-2)
     
     for i in range(accuracy):
-        H[nelements-2][nelements-5+i] = H[nelements-2][nelements-5+i] + D1[i] + D2[i]
+        H[nelements-2][nelements-1-i] = H[nelements-2][nelements-1-i] + D1[i] + D2[i]
     #------------------------------------------ 
 
     # last row --------------------------------
@@ -283,7 +283,7 @@ def gen_H_matrix(mass,J,rwave,potential, accuracy, step):
     print (nelements-1)
     
     for i in range(accuracy):
-        H[nelements-1][nelements-5+i] = H[nelements-1][nelements-5+i] + D1[i] + D2[i]
+        H[nelements-1][nelements-1-i] = H[nelements-1][nelements-1-i] + D1[i] + D2[i]
     #------------------------------------------ 
     
    
@@ -303,13 +303,23 @@ H3=gen_H_matrix(nu ,0,rwave,fp,5,step)
 
 w,v=np.linalg.eig(H3)
 
-#exit(0)
+ind = np.argsort(w, axis=0)
+C=w[ind]
+
+E = w[:,np.argsort(v, axis=0)]
+
+#----------------------------------
+
+
+
+#----------------------------------
   
 plt.figure(0)
 ax0 = plt.axes()
 plt.title('Potential', fontsize=20)
-plt.plot( rwave, v[:,2360] ,'r-',  label='potential')
-#plt.plot( index,  unexposed_pixel2, 'g-',  label='unexposed  pixel')
+plt.plot( rwave, E[:,0] ,'r-',  label='potential')
+plt.plot( rwave, E[:,1] ,'r-',  label='potential')
+plt.plot( rwave, E[:,2] ,'r-',  label='potential')
 
 
 
