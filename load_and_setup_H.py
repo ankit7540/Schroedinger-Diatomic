@@ -174,6 +174,10 @@ if  (unit_c3 ==  "cm-1"):
 # final potential
 fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
 
+np.savetxt("potential.txt", fp, fmt='%5.9f')
+
+np.savetxt("rwave.txt", rwave, fmt='%5.9f')
+#exit(0)
 #  generate the Hmatrix ------------------------------
 
 #for i in range(nelements):
@@ -244,6 +248,14 @@ nu = reduced_mass(1,2,1,1,2,1)
 
 H1=gen_H_matrix(nu ,2,rwave,fp)
         
+H2=H1
+H2[0,:]=0
+H2[1,:]=0
+
+H2[-1,:]=0
+H2[-2,:]=0
+
+
 #plt.figure(0)
 #ax0 = plt.axes()
 #plt.title('Potential', fontsize=20)
