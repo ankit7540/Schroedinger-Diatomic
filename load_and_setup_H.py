@@ -213,6 +213,7 @@ def gen_H_matrix(mass,J,rwave,potential, accuracy, step):
     '''
     Generate the Hamiltonian matrix for the radial
     nuclear equation for diatomic molecule
+    for fixed accuracy for 5, i.e. 5 point derivative 
     '''
     print ("reduced mass : ", mass)
     H=np.zeros((nelements, nelements), dtype=float)
@@ -305,14 +306,20 @@ nu = reduced_mass(1,1,1,1,1,1)
 H3=gen_H_matrix(nu ,0,rwave,fp,5,step)
 
 
-w,v=np.linalg.eig(H3)
+#w,v=np.linalg.eig(H3)
 
-ind = np.argsort(w, axis=0)
-C=w[ind]
+#ind = np.argsort(w, axis=0)
+#C=w[ind]
 
-E = w[:,np.argsort(v, axis=0)]
+#E = w[:,np.argsort(v, axis=0)]
 
 #----------------------------------
+H2=H3
+H2[0,:]=0
+H2[1,:]=0
+
+H2[-1,:]=0
+H2[-2,:]=0
 
 
 
