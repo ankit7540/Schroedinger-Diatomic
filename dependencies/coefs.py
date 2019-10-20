@@ -3,8 +3,9 @@ Programs for the coefs for the finite difference numerical derivatives
 '''
 import numpy as np
 import math
-import timeit
-import functools
+
+#import timeit
+#import functools
 #-------------------------------------------------------------
 def coef_symmetric_center (n, nd):
     '''
@@ -178,7 +179,15 @@ S1=coef_backward( 1, 5 )
 
 #X=( coef_symmetric_center (1,11)  )    
 #print(X)
-S2=coef_symmetric_center (3, 5 ) 
-S3=coef_forward (3, 5 ) 
-for i in range(np.shape(S2)[0]):
-    print(S2[i],"\t",S3[i])
+S2=coef_backward_asymmetric (1, 5, 1 ) 
+S3=coef_backward (1, 5 )
+print(S2)
+print(S3)
+
+print ("\n")
+
+S2=coef_backward_asymmetric (2, 5, 1 ) 
+S3=coef_backward (2, 5 )
+print(S2)
+print(S3)
+

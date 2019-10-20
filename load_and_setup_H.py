@@ -12,8 +12,10 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
 import periodictable as pt
-import findiff
-
+#import findiff
+#import os
+#import dependencies as dep
+from dependencies import coefs
 
 #print  (str(ELEMENTS[8])  )
 
@@ -119,13 +121,16 @@ m1 =  918
 m2 = 918
 
 #  step  size
-step  =  0.005
+step  =  0.00500
 
 #  start and end   value of the potential distance curve
 start  = distance[0]
-end = distance[-1]
+end = int(distance[-1])
 rwave=np.arange(start,end,step)
+rwave = np.append(rwave,12.0)
 nelements=len(rwave)
+
+print (nelements)
 #-------------------------------------------------------------------
 #print(start,end)
 
@@ -180,26 +185,6 @@ np.savetxt("rwave.txt", rwave, fmt='%5.9f')
 #exit(0)
 #  generate the Hmatrix ------------------------------
 
-#for i in range(nelements):
-	#print (i )
-
-# coefficients for the derivatives
-accuracy_order=4  
-coefs_d1 = findiff.coefficients(deriv=2, acc=accuracy_order)
-for i in range(accuracy_order+1):
-    print(i,"\t",coefs_d1['center']['coefficients'][i],"\t",coefs_d1['forward']['coefficients'][i])
-
-print("\n \n")
-
-#coefs_d2 = findiff.coefficients(deriv=2, acc=4)
-#for i in range(5):
-#    print(i,"\t",coefs_d2['center']['coefficients'][i],"\t",coefs_d2['forward']['coefficients'][i])
-
-
-# check the coefs with the Igor implementation
-
-
-
 def reduced_mass(zA, iMassA,eA, zB, iMassB, eB):
     '''
     zA = atomic number for atom A
@@ -208,59 +193,137 @@ def reduced_mass(zA, iMassA,eA, zB, iMassB, eB):
     iMassB = atomic mass of specific isotope
     '''
     mass = 1822.888486209
-    
+
     sA=pt.elements[zA][iMassA]
     sB=pt.elements[zB][iMassB]
-    
+
     mA=float(sA.mass)
     mB=float(sB.mass)
-    
-    A=mA*mass+eA
-    B=mB*mass+eB
-    print (A, B)
+
+    A=mA*mass
+    B=mB*mass
+    print ("\nA = ",A,"B = ", B)
+
     #return reduced mass
     return 1/(1/A + 1/B)
-    
 
-def gen_H_matrix(mass,J,rwave,potential):
+#----------------------------------------------------------
+
+def gen_H_matrix(mass,J,rwave,potential, accuracy, step):
     '''
-    Generate the Hamiltonian matrix for the radial 
+    Generate the Hamiltonian matrix for the radial
     nuclear equation for diatomic molecule
     '''
-    
+    print ("reduced mass : ", mass)
     H=np.zeros((nelements, nelements), dtype=float)
-    
-    for i in range(nelements):
-        
+    ne=int((accuracy-1) / 2)
 
-        
+
+    for i in range(nelements):
+
+        # assign the diagonal term
         J_term = (J*(J+1)) / (2*mass*(rwave[i])**2 )
-        H[i,i]=J_term
-    
-    return H    
+        H[i,i]=J_term + potential[i]
+
+        # assign the derivatives
+
+    # first row -------------------------
+    D1=coefs.coef_forward (1, accuracy )
+    D2=coefs.coef_forward (2, accuracy )
+
+    D1=D1*-1/mass/rwave[0]/step
+    D2=D2*-1/(2*mass)/(step**2)
+
+    print (D1)
+
+    for i in range(accuracy):
+        H[0][i] = H[0][i] + D1[i] + D2[i]
+    #-------------------------------------
+
+    # second row -------------------------
+    D1=coefs.coef_forward_asymmetric (1, accuracy, 1 )
+    D2=coefs.coef_forward_asymmetric (2, accuracy, 1 )
+
+    D1=D1*-1/mass/rwave[1]/step
+    D2=D2*-1/(2*mass)/(step**2)
+
+    for i in range(accuracy):
+        H[1][i] = H[1][i] + D1[i] + D2[i]
+    #-------------------------------------
+
+
+    # all symmetric rows -------------------------
+    for i in range (2, nelements-2):
+        D1=coefs.coef_symmetric_center (1, accuracy )
+        D2=coefs.coef_symmetric_center(2, accuracy )
+
+        D1=D1*-1/mass/rwave[i]/step
+        D2=D2*-1/(2*mass)/(step**2)
+        #print (i, nelements)
+
+        for j in range(accuracy):
+            H[i][i-ne+j] = H[i][i-ne+j] + D1[j] + D2[j]
+            #print (i,j, i-ne+j, nelements)
+    #---------------------------------------------
+
+    # second last row -------------------------
+    D1=coefs.coef_backward_asymmetric (1, accuracy, 1 )
+    D2=coefs.coef_backward_asymmetric (2, accuracy, 1 )
+
+    D1=D1*-1/mass/rwave[nelements-2]/step
+    D2=D2*-1/(2*mass)/(step**2)
+    print (nelements-2)
+
+    for i in range(accuracy):
+        H[nelements-2][nelements-1-i] = H[nelements-2][nelements-1-i] + D1[i] + D2[i]
+    #------------------------------------------
+
+    # last row --------------------------------
+    D1=coefs.coef_backward (1, accuracy )
+    D2=coefs.coef_backward (2, accuracy )
+
+    D1=D1*-1/mass/rwave[nelements-1]/step
+    D2=D2*-1/(2*mass)/(step**2)
+    print (nelements-1)
+
+    for i in range(accuracy):
+        H[nelements-1][nelements-1-i] = H[nelements-1][nelements-1-i] + D1[i] + D2[i]
+    #------------------------------------------
+
+
+
+
+    return H
 
 #-------------------------------------------------------------------
-print(reduced_mass(1,1,1,1,1,1))        
+#print(reduced_mass(1,1,1,1,1,1))
 
-print(reduced_mass(1,1,1,1,2,1))        
-print(reduced_mass(1,2,1,1,2,1))        
-nu = reduced_mass(1,2,1,1,2,1)
+#print(reduced_mass(1,1,1,1,2,1))
+#print(reduced_mass(1,2,1,1,2,1))
+nu = reduced_mass(1,1,1,1,1,1)
 
-H1=gen_H_matrix(nu ,2,rwave,fp)
-        
-H2=H1
-H2[0,:]=0
-H2[1,:]=0
-
-H2[-1,:]=0
-H2[-2,:]=0
+H3=gen_H_matrix(nu ,0,rwave,fp,5,step)
 
 
-#plt.figure(0)
-#ax0 = plt.axes()
-#plt.title('Potential', fontsize=20)
-#plt.plot( rwave, fp ,'r-',  label='potential')
-#plt.plot( index,  unexposed_pixel2, 'g-',  label='unexposed  pixel')
+w,v=np.linalg.eig(H3)
+
+ind = np.argsort(w, axis=0)
+C=w[ind]
+
+E = w[:,np.argsort(v, axis=0)]
+
+#----------------------------------
+
+
+
+#----------------------------------
+
+plt.figure(0)
+ax0 = plt.axes()
+plt.title('Potential', fontsize=20)
+plt.plot( rwave, E[:,0] ,'r-',  label='potential')
+plt.plot( rwave, E[:,1] ,'r-',  label='potential')
+plt.plot( rwave, E[:,2] ,'r-',  label='potential')
 
 
 
