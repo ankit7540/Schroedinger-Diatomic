@@ -89,17 +89,26 @@ def factorial(n):
 
 # Loading data and checks:
 
+# Born-Oppenheimer potential
 distance = np.loadtxt("./data/r_wave670_H2.txt")
 potential = np.loadtxt("./data/pes670_H2.txt")
 
+# adiabtaic correction
 correction1 = np.loadtxt("./data/adiabticE1.txt")
 distance_c1 = np.loadtxt("./data/adb_r_distance.txt")
 
+# adiabtaic correction
 correction2 = np.loadtxt("./data/adiabticE2.txt")
 distance_c2 = np.loadtxt("./data/adb_r_distance.txt")
 
+# radiative correction
 correction3 = np.loadtxt("./data/radiative_57.txt")
 distance_c3 = np.loadtxt("./data/r_wave_57_radiative.txt")
+
+# relativistic correction
+correction4 = np.loadtxt("./data/relativistic.txt")
+distance_c4 = np.loadtxt("./data/r_wave_relativistic.txt")
+
 
 #-------------------------------------------------------------------
 # Units:
@@ -107,6 +116,7 @@ unit_potential = "H"
 unit_c1 = "cm-1"
 unit_c2 = "cm-1"
 unit_c3 = "cm-1"
+unit_c4 = "cm-1"
 #-------------------------------------------------------------------
 
 # Parameters :
@@ -116,9 +126,6 @@ q1 = 1
 q2 = 1
 
 
-# Atomic mass, in atomic units
-m1 =  918
-m2 = 918
 
 #  step  size
 step  =  0.00500
@@ -129,6 +136,9 @@ end = int(distance[-1])
 rwave=np.arange(start,end,step)
 rwave = np.append(rwave,12.0)
 nelements=len(rwave)
+
+hartree_to_wavenumber=2.1947463136320*10**5 
+print ("energy:", hartree_to_wavenumber)
 
 print (nelements)
 #-------------------------------------------------------------------
@@ -157,33 +167,46 @@ cs = CubicSpline(distance_c3,  correction3,bc_type=((1,derv[0]),(1,derv[1])))
 radc_interp = cs(rwave)
 
 
+derv = fd_ends(distance_c4,  correction4)
+cs = CubicSpline(distance_c4,  correction4, bc_type=((1,derv[0]),(1,derv[1])))
+relativistic_interp = cs(rwave)
+
 # Generate  the final potential ---------------------------------
 
 #  Generate final potential based on the  unit
 if  (unit_potential ==  "cm-1"):
-    potential_interp = potential_interp / 219474.631370200000000
+    potential_interp = potential_interp / hartree_to_wavenumber
 
 if  (unit_c1 ==  "cm-1"):
-    adbc1_interp = adbc1_interp / 219474.631370200000000
+    adbc1_interp = adbc1_interp / hartree_to_wavenumber
 
 if  (unit_c2 ==  "cm-1"):
-    adbc2_interp = adbc1_interp / 219474.631370200000000
+    adbc2_interp = adbc1_interp / hartree_to_wavenumber
 
 if  (unit_c3 ==  "cm-1"):
-    radc_interp = radc_interp / 219474.631370200000000
+    radc_interp = radc_interp / hartree_to_wavenumber
 
+if  (unit_c4 ==  "cm-1"):
+    relativistic_interp = relativistic_interp / hartree_to_wavenumber
 
-
+# --------------------------------------------------------------
 
 
 # final potential
-fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
+fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp+relativistic_interp
 
-np.savetxt("potential.txt", fp, fmt='%5.9f')
 
-np.savetxt("rwave.txt", rwave, fmt='%5.9f')
+np.savetxt("adiabatic_corr1.txt", adbc1_interp, fmt='%5.12f')
+np.savetxt("adiabatic_corr2.txt", adbc2_interp, fmt='%5.12f')
+np.savetxt("radiative_corr.txt", radc_interp, fmt='%5.12f')
+np.savetxt("relativistiv_corr.txt", relativistic_interp, fmt='%5.12f')
+
+
+np.savetxt("potential.txt", fp, fmt='%5.12f')
+np.savetxt("rwave.txt", rwave, fmt='%5.12f')
+
 #exit(0)
-#  generate the Hmatrix ------------------------------
+#  generate the Hmatrix -----------------------------------
 
 def reduced_mass(zA, iMassA,eA, zB, iMassB, eB):
     '''
@@ -328,9 +351,9 @@ H2[-2,:]=0
 plt.figure(0)
 ax0 = plt.axes()
 plt.title('Potential', fontsize=20)
-plt.plot( rwave, E[:,0] ,'r-',  label='potential')
-plt.plot( rwave, E[:,1] ,'r-',  label='potential')
-plt.plot( rwave, E[:,2] ,'r-',  label='potential')
+#plt.plot( rwave, E[:,0] ,'r-',  label='potential')
+#plt.plot( rwave, E[:,1] ,'r-',  label='potential')
+#plt.plot( rwave, E[:,2] ,'r-',  label='potential')
 
 
 
