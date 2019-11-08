@@ -101,6 +101,10 @@ distance_c2 = np.loadtxt("./data/adb_r_distance.txt")
 correction3 = np.loadtxt("./data/radiative_57.txt")
 distance_c3 = np.loadtxt("./data/r_wave_57_radiative.txt")
 
+# relativistic correction
+correction4 = np.loadtxt("./data/relativistic.txt")
+distance_c4 = np.loadtxt("./data/r_distance_rel.txt")
+
 
 pot_f = np.loadtxt("./temporary/r_wave.txt")
 distance_f = np.loadtxt("./temporary/scaled_y.txt")
@@ -112,6 +116,7 @@ unit_potential = "H"
 unit_c1 = "cm-1"
 unit_c2 = "cm-1"
 unit_c3 = "cm-1"
+unit_c4 = "cm-1"
 #-------------------------------------------------------------------
 
 # Parameters :
@@ -127,7 +132,10 @@ rwave=np.arange(start,end,step)
 rwave = np.append(rwave,12.0)
 nelements=len(rwave)
 
-print (nelements)
+hartree_to_wavenumber=2.1947463136320*10**5 
+print ("energy:", hartree_to_wavenumber)
+
+print ( start, end, nelements)
 #-------------------------------------------------------------------
 #print(start,end)
 
@@ -153,28 +161,35 @@ derv = fd_ends(distance_c3,  correction3)
 cs = CubicSpline(distance_c3,  correction3,bc_type=((1,derv[0]),(1,derv[1])))
 radc_interp = cs(rwave)
 
+derv = fd_ends(distance_c4,  correction4)
+cs = CubicSpline(distance_c4,  correction4, bc_type=((1,derv[0]),(1,derv[1])))
+relativistic_interp = cs(rwave)
+
 
 # Generate  the final potential ---------------------------------
 
 #  Generate final potential based on the  unit
 if  (unit_potential ==  "cm-1"):
-    potential_interp = potential_interp / 219474.631370200000000
+    potential_interp = potential_interp / hartree_to_wavenumber
 
 if  (unit_c1 ==  "cm-1"):
-    adbc1_interp = adbc1_interp / 219474.631370200000000
+    adbc1_interp = adbc1_interp / hartree_to_wavenumber
 
 if  (unit_c2 ==  "cm-1"):
-    adbc2_interp = adbc1_interp / 219474.631370200000000
+    adbc2_interp = adbc1_interp / hartree_to_wavenumber
 
 if  (unit_c3 ==  "cm-1"):
-    radc_interp = radc_interp / 219474.631370200000000
+    radc_interp = radc_interp / hartree_to_wavenumber
+
+if  (unit_c4 ==  "cm-1"):
+    relativistic_interp = relativistic_interp / hartree_to_wavenumber
 
 
 
 
 
 # final potential
-fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp
+fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp+relativistic_interp
 
 np.savetxt("potential.txt", fp, fmt='%5.9f')
 
@@ -348,16 +363,19 @@ nextra=int(acc-1)
 H3=gen_H_matrix_sym (nu ,0,distance_f,pot_f,acc,step)
 v,w=np.linalg.eig(H3)
 
+
+#H4=gen_H_matrix(nu,0,distance_f,pot_f, acc, step)
 # trim --------------------
 
 m=nelements+int(acc-1)
-start=int((acc-1)/2)
+st=int((acc-1)/2)
 
-print(m-(2*start),m-1)    
+print( st ,m-(2*st),m-1)    
+
 eigval=v[:-nextra]
 
-eigvec=w[start:, :] 
-eigvec=eigvec[:-start, :] 
+eigvec=w[st:, :] 
+eigvec=eigvec[:-st, :] 
 eigvec=eigvec[:, :-nextra] 
 
 print("dimensions of eigvalue : ", np.shape(eigval))
@@ -371,13 +389,14 @@ evalue = eigval[np.argsort(eigval, axis=0)]
 evector = eigvec[:,np.argsort(eigval, axis=0)]
 # -------------------------
 
-del eigval
-del eigvec
-del w, H3
-del v
+#del eigval
+#del eigvec
+#del w, H3
+#del v
 
 
-print ( ( evalue[1] - evalue[0]) * 219474.631370200000000 )
+print (  evalue[1], evalue[0])
+print ( ( evalue[1] - evalue[0]) * hartree_to_wavenumber )
 
 plt.figure(0)
 ax0 = plt.axes()

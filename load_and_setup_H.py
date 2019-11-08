@@ -107,7 +107,7 @@ distance_c3 = np.loadtxt("./data/r_wave_57_radiative.txt")
 
 # relativistic correction
 correction4 = np.loadtxt("./data/relativistic.txt")
-distance_c4 = np.loadtxt("./data/r_wave_relativistic.txt")
+distance_c4 = np.loadtxt("./data/r_distance_rel.txt")
 
 
 #-------------------------------------------------------------------
@@ -205,6 +205,7 @@ np.savetxt("relativistiv_corr.txt", relativistic_interp, fmt='%5.12f')
 np.savetxt("potential.txt", fp, fmt='%5.12f')
 np.savetxt("rwave.txt", rwave, fmt='%5.12f')
 
+#print("interpolated waves generated")
 #exit(0)
 #  generate the Hmatrix -----------------------------------
 
