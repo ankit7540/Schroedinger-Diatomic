@@ -189,7 +189,7 @@ if  (unit_c4 ==  "cm-1"):
 
 
 # final potential
-fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp+relativistic_interp
+fp = potential_interp+ adbc1_interp+adbc2_interp+radc_interp #+relativistic_interp
 
 np.savetxt("potential.txt", fp, fmt='%5.9f')
 
@@ -212,8 +212,8 @@ def reduced_mass(zA, iMassA,eA, zB, iMassB, eB):
     mA=float(sA.mass)
     mB=float(sB.mass)
 
-    A=mA*mass
-    B=mB*mass
+    A=mA*mass+eA
+    B=mB*mass+eB
     print ("\nA = ",A,"B = ", B)
 
     #return reduced mass
@@ -355,14 +355,29 @@ def gen_H_matrix_sym(mass,J,rwave,potential, accuracy, step):
 #-------------------------------------------------------------------
 
 
-nu = reduced_mass(1,1,1,1,1,1)
+nuH2 = reduced_mass(1,1,1,1,1,1)
+nuHD = reduced_mass(1,2,1,1,1,1)
+nuD2 = reduced_mass(1,2,1,1,2,1)
 
+print(nuH2, nuHD, nuD2)
 
-acc=9
+acc=5
 nextra=int(acc-1)
-H3=gen_H_matrix_sym (nu ,0,distance_f,pot_f,acc,step)
-v,w=np.linalg.eig(H3)
+H3=gen_H_matrix_sym (nuD2 ,0,rwave,fp,acc,step)
+H4=gen_H_matrix (nuD2 ,0,rwave,fp,acc,step)
 
+v,w=np.linalg.eig(H3)
+p,q=np.linalg.eig(H4)
+pvalue = p[np.argsort(p, axis=0)]
+qvector = q[:,np.argsort(p, axis=0)]
+
+print (  pvalue[1], pvalue[0])
+print ( ( pvalue[1] - pvalue[0]) * hartree_to_wavenumber )
+
+print("-*-*-*-*-*-*-*-*-")
+
+
+print('Shape of v:',v.shape, 'Shape of w:' ,w.shape)
 
 #H4=gen_H_matrix(nu,0,distance_f,pot_f, acc, step)
 # trim --------------------
@@ -372,8 +387,8 @@ st=int((acc-1)/2)
 
 print( st ,m-(2*st),m-1)    
 
-eigval=v[:-nextra]
 
+eigval=v[:-nextra]
 eigvec=w[st:, :] 
 eigvec=eigvec[:-st, :] 
 eigvec=eigvec[:, :-nextra] 
