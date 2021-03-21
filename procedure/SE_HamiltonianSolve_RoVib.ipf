@@ -5600,38 +5600,6 @@ setdatafolder cdf
 print "----------------------------------------------"		////   O1 branch
 end
 
-function print_transition_rotn_even (s2m):buttoncontrol
-string s2m
-nvar jm=root:Params:RoVibHamiltonian:j_max
-string fname,j
-print "--- Rotational transition energies ---"
-string cdf=getdatafolder(1)
-print cdf
-variable i=0
-for (i=1 ; i<(jm-1) ; i=i+2)
-
-variable a,b
-string addr1,addr2
-sprintf addr1,"%sJ%g:Calc",cdf,i
-sprintf addr2,"%sJ%g:Calc",cdf,(i+2)
-//print addr1, addr2 
-//a=:Calc:eval[0]
-setdatafolder addr1
-wave eval=eval
-a=eval[0]
-
-setdatafolder addr2
-wave eval=eval
-b=eval[0]
-
-
-printf "%g %g %6.8f\r", i, i+2 ,  ( (b-a )*219474.6313702 )
-
-endfor
-setdatafolder cdf
-
-print "----------------------------------------------"
-end
 
 
 //************************************************************************************************************************
