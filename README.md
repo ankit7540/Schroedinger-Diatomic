@@ -2,7 +2,7 @@
 
 Procedure files written for IgorPro, for the solution of the Schroedinger equation (or the radial nuclear equation) for molecular hydrogen and its isotopes. This scheme uses a known potential curve available as a vector over the inter-nuclear distance.
 
-For actual experiment files (IgorPro .pxp files) for H2 and isotopologues, see repository on zenodo.
+For actual experiment files (IgorPro .pxp files) for H2 and isotopologues, see repository on zenodo. (<a href="https://doi.org/10.5281/zenodo.4625523"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4625523.svg" alt="DOI"></a>)
 
 Published works from this research in the following reports:
 
