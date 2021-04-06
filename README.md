@@ -4,7 +4,7 @@ Procedure files written for IgorPro, for the solution of the Schroedinger equati
 
 
 
-For actual experiment files (IgorPro .pxp files) for H2 and isotopologues, see repository on zenodo. <a href="https://doi.org/10.5281/zenodo.4625523"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4625523.svg" alt="DOI"></a>
+For actual experiment files (IgorPro .pxp files) for H<sub>2</sub> and isotopologues, see repository on zenodo. <a href="https://doi.org/10.5281/zenodo.4625523"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4625523.svg" alt="DOI"></a>
 
 Published works from this research in the following reports:
 
@@ -12,6 +12,6 @@ Published works from this research in the following reports:
 
  - A. Raj, H. A. Witek, and H. Hamaguchi, [Mol. Phys. 118, e1632950 (2019)](https://doi.org/10.1080/00268976.2019.1632950 "Mol. Phys. 118, e1632950").
 
-**General applicability**: With a known electronic potential function ( over the inter-nuclear distance) solutions for the rovibrational states (i.e. energies and the corresponding wavefunctions) can be obtained. This was tested with the case of O2.
+**General applicability**: With a known electronic potential function ( over the inter-nuclear distance) solutions for the rovibrational states (i.e. energies and the corresponding wavefunctions) can be obtained. This was tested with the case of O<sub>2</sub>.
 
 This documentation is incomplete. Use Issues to to raise questions  and/or to request further documentation.
