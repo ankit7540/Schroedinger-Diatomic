@@ -1,5 +1,7 @@
 # Schroedinger-Diatomic
 
+**Python implementation is [available here](https://github.com/ankit7540/Raman-Intensity-Approxmn-Test/tree/main/python_functions)**
+
 Procedure files written for IgorPro, for the solution of the Schroedinger equation (or the radial nuclear equation) for molecular hydrogen and its isotopes. This scheme uses a known potential curve available as a vector over the inter-nuclear distance.
 
 
